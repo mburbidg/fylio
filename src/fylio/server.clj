@@ -1,12 +1,12 @@
 (ns fylio.server
-  (:gen-class))
+  (:gen-class)
+  (:require [ring.adapter.jetty :as jetty]))
 
-(defn greet
-  "Callable entry point to the application."
-  [data]
-  (println (str "Hello, " (or (:name data) "World") "!")))
+(defn handler [_request]
+  {:status  200
+   :headers {"content-type" "text/plain; charset=utf-8"}
+   :body    "Hello, World!\n"})
 
-(defn -main
-  "I don't do a whole lot ... yet."
-  [& args]
-  (greet {:name (first args)}))
+(defn -main [& _args]
+  (println "Starting server on http://localhost:3000")
+  (jetty/run-jetty handler {:port 3000 :join? true}))
