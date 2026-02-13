@@ -89,3 +89,8 @@
 
 (add10 1)
 (add10 1 4)
+
+[:map
+ [:id int?]]
+
+{:id int?}
