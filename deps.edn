@@ -6,7 +6,8 @@
          metosin/reitit-ring       {:mvn/version "0.10.0"}
          metosin/reitit-malli      {:mvn/version "0.10.0"}
          metosin/malli             {:mvn/version "0.20.0"}
-         cheshire/cheshire         {:mvn/version "5.13.0"}}
+         cheshire/cheshire         {:mvn/version "5.13.0"}
+         com.walmartlabs/lacinia   {:mvn/version "1.2.2"}}
  :aliases
  {:run-m {:main-opts ["-m" "fylio.server"]}
   :run-x {:ns-default fylio.server

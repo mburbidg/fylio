@@ -13,8 +13,3 @@
 ;      (utils/json-response {:error "Expected JSON body"} 400)
 ;      )
 ;    ))
-
-(defn get-user-handler
-  [req]
-  (:id users)
-  )

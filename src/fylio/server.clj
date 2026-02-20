@@ -11,6 +11,18 @@
     [ring.middleware.params :refer [wrap-params]]
     [ring.util.response :as resp]))
 
+(defn get-user-handler
+  [req]
+  ((let [id (get-in req [:query-params "id"])]
+     (utils/json-response {:message (str "Get User: " id)})
+     )
+   )
+  )
+
+(defn create-user-handler
+  [req]
+  )
+
 (def app
   (wrap-params
     (ring/ring-handler
@@ -20,9 +32,8 @@
 
          ["/api"
           ["/users"
-           {:get  {:parameters {:query [:map
-                                        [:id string?]]}
-                   :handler    (fn [_] (utils/json-response {:message "Get User"}))}
+           {:get  {:parameters {:query [:map [:id string?]]}
+                   :handler     get-user-handler}
             :post {:handler (fn [_] (utils/json-response {:message "Create User"}))}}]
 
           ["/hello"

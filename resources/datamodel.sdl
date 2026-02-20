@@ -1,0 +1,49 @@
+type Users {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  dateOfBirth: Int!
+  email: String!
+  password: String!
+}
+
+enum RoleNames {
+  ADMIN
+  STUDENT
+  INSTRUCTOR
+}
+
+type Roles {
+    id: ID!
+    role: RoleNames!
+    userId: ID!
+}
+
+type Instructors {
+  id: ID!
+  user: ID!
+  course: ID!
+}
+
+type Courses {
+  id: ID!
+  name: String!
+  description: String!
+  classSize: Int!
+}
+
+type Registrations {
+  id: ID!
+  user: ID!
+  course: ID!
+  dateRegistered: Int!
+}
+
+type Query {
+  users: [Users!]!
+  user(id: ID!): Users
+}
+
+type Mutation {
+  createUser(firstName: String!,lastName: String!,dateOfBirth: Int!,email: String!,password: String!): ID
+}
