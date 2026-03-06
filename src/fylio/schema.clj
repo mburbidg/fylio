@@ -1,6 +1,7 @@
 (ns fylio.schema
   "Contains custom resolvers and a function to provide the full schema."
   (:require [clojure.java.io :as io]
+            [com.stuartsierra.component :as component]
             [com.walmartlabs.lacinia.util :as util]
             [com.walmartlabs.lacinia.schema :as schema]
             [clojure.edn :as edn]))
@@ -47,6 +48,7 @@
      :Query/courseById (partial resolve-course-by-id courses-map)
      :User/courses (partial resolve-user-courses courses-map)
      :Course/students (partial resolve-course-students users-map)}))
+
 (defn load-schema
   []
   (-> (io/resource "schema.edn")
@@ -54,3 +56,13 @@
       edn/read-string
       (util/inject-resolvers (resolver-map))
       schema/compile))
+
+(defrecord SchemaProvider [schema]
+
+  component/Lifecycle
+
+  (start [this]
+    (assoc this :schema (load-schema)))
+
+  (stop [this]
+    (assoc this :schema nil)))

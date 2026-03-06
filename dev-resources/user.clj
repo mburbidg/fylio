@@ -1,13 +1,10 @@
 (ns user
-  (:require [fylio.schema :as s]
+  (:require [com.stuartsierra.component :as component]
+            [fylio.system :as system]
             [com.walmartlabs.lacinia :as lacinia]
-            [com.walmartlabs.lacinia.pedestal2 :as lp]
-            [io.pedestal.http :as http]
             [clojure.java.browse :refer [browse-url]]
             [clojure.walk :as walk])
   (:import (clojure.lang IPersistentMap)))
-
-(def schema (s/load-schema))
 
 (defn simplify
   "Converts all ordered maps nested within the map into standard hash maps, and
@@ -26,32 +23,23 @@
         node))
     m))
 
+(defonce system (system/new-system))
+
 (defn q
   [query-string]
-  (-> (lacinia/execute schema query-string nil nil)
+  (-> system
+      :schema-provider
+      :schema
+      (lacinia/execute query-string nil nil)
       simplify))
-
-(defonce server nil)
-
-(defn start-server
-  [_]
-  (let [server (-> (lp/default-service schema nil)
-                   http/create-server
-                   http/start)]
-    (browse-url "http://localhost:8888/ide")
-    server))
-
-(defn stop-server
-  [server]
-  (http/stop server)
-  nil)
 
 (defn start
   []
-  (alter-var-root #'server start-server)
+  (alter-var-root #'system component/start-system)
+  (browse-url "http://localhost:8888/ide")
   :started)
 
 (defn stop
   []
-  (alter-var-root #'server stop-server)
+  (alter-var-root #'system component/stop-system)
   :stopped)
