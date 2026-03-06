@@ -3,6 +3,8 @@
 Simple class scheduling system. Main purpose is to learn Clojure and related technologies. All data is stored in memory.
 So there is no need to run a database.
 
+The project uses [Lacinia](https://github.com/walmartlabs/lacinia) for GraphQL processing and [Lacinia-pedestal](https://github.com/walmartlabs/lacinia-pedestal) for http serving of GraphQL requests.
+
 ## Installation
 
 Download from https://github.com/fylio/fylio
