@@ -1,4 +1,4 @@
-(ns fylio.examples)
+(ns fylio.learn.examples)
 
 (defn my-inc
   [n]

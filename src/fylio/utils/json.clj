@@ -1,4 +1,4 @@
-(ns fylio.utils
+(ns fylio.json
   (:require
     [cheshire.core :as json]
     [ring.util.response :as resp]))

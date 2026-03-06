@@ -1,4 +1,4 @@
-(ns fylio.query
+(ns fylio.learn.query
   (:require
     [clojure.edn :as edn]
     [com.walmartlabs.lacinia.util :refer [inject-resolvers]]

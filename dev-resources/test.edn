@@ -1,0 +1,36 @@
+{:objects
+ {:BoardGame
+  {:description "A physical or virtual board game."
+   :fields
+   {:id          {:type (non-null ID)}
+    :name        {:type (non-null String)}
+    :summary     {:type        String
+                  :description "A one-line summary of the game."}
+    :description {:type        String
+                  :description "A long-form description of the game."}
+    :designers   {:type        (non-null (list :Designer))
+                  :description "Designers who contributed to the game."}
+    :minPlayers  {:type        Int
+                  :description "The minimum number of players the game supports."}
+    :maxPlayers  {:type        Int
+                  :description "The maximum number of players the game supports."}
+    :playTime    {:type        Int
+                  :description "Play time, in minutes, for a typical game."}}}
+
+  :Designer
+  {:description "A person who may have contributed to a board game design."
+   :fields
+   {:id    {:type (non-null ID)}
+    :name  {:type (non-null String)}
+    :url   {:type        String
+            :description "Home page URL, if known."}
+    :games {:type        (non-null (list :BoardGame))
+            :description "Games designed by this designer."}}}
+
+  :Query
+  {:fields
+   {:gameById
+    {:type        :BoardGame
+     :description "Access a BoardGame by its unique id, if it exists."
+     :args
+     {:id {:type ID}}}}}}}
