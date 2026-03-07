@@ -4,57 +4,44 @@
             [com.stuartsierra.component :as component]
             [com.walmartlabs.lacinia.util :as util]
             [com.walmartlabs.lacinia.schema :as schema]
+            [fylio.db :as db]
             [clojure.edn :as edn]))
 
-(defn resolve-user-by-id
-  [users-map context args value]
-  (let [{:keys [id]} args]
-    (get users-map id)
-    ))
+(defn user-by-id
+  [db]
+  (fn [_ args _]
+    (db/find-user-by-id db (:id args))))
 
-(defn resolve-course-by-id
-  [courses-map context args value]
-  (let [{:keys [id]} args]
-    (get courses-map id)
-    ))
+(defn course-by-id
+  [db]
+  (fn [_ args _]
+    (db/find-course-by-id db (:id args))))
 
-(defn resolve-user-courses
-  [courses-map context args user]
-  (->> user
-       :courses
-       (map courses-map)))
+(defn user-courses
+  [db]
+  (fn [_ _ user]
+    (db/list-courses-for-user db (:id user))))
 
-(defn resolve-course-students
-  [users-map context args course]
-  (let [{:keys [id]} course]
-    (->> users-map
-         vals
-         (filter #(-> % :courses (contains? id))))))
-
-(defn entity-map
-  [data k]
-  (reduce #(assoc %1 (:id %2) %2)
-          {}
-          (get data k)))
+(defn course-students
+  [db]
+  (fn [_ _ course]
+    (db/list-users-for-course db (:id course))))
 
 (defn resolver-map
-  []
-  (let [user-data (-> (io/resource "user-data.edn")
-                     slurp
-                     edn/read-string)
-        users-map (entity-map user-data :users)
-        courses-map (entity-map user-data :courses)]
-    {:Query/userById (partial resolve-user-by-id users-map)
-     :Query/courseById (partial resolve-course-by-id courses-map)
-     :User/courses (partial resolve-user-courses courses-map)
-     :Course/students (partial resolve-course-students users-map)}))
+  [component]
+  (let [{:keys [db]} component]
+    {:Query/userById   (user-by-id db)
+     :Query/courseById (course-by-id db)
+     :User/courses     (user-courses db)
+     :Course/students  (course-students db)}))
+
 
 (defn load-schema
-  []
+  [component]
   (-> (io/resource "schema.edn")
       slurp
       edn/read-string
-      (util/inject-resolvers (resolver-map))
+      (util/inject-resolvers (resolver-map component))
       schema/compile))
 
 (defrecord SchemaProvider [schema]
@@ -62,7 +49,7 @@
   component/Lifecycle
 
   (start [this]
-    (assoc this :schema (load-schema)))
+    (assoc this :schema (load-schema this)))
 
   (stop [this]
     (assoc this :schema nil)))
