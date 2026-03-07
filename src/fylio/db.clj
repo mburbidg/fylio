@@ -53,12 +53,13 @@
 
 (defn ^:private apply-user
   [users user-id user]
-  (let [new-user (assoc user :id user-id)]
+  (let [new-user (-> user
+                     (update :courses set)
+                     (assoc :id user-id))]
     (->> users
          (remove #(= user-id (:id %)))
          (cons new-user)
          vec)))
-
 (defn upsert-user
   "Adds a new user, or changes the value of an existing user."
   [db user-id user]

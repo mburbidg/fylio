@@ -4,6 +4,7 @@
             [com.stuartsierra.component :as component]
             [com.walmartlabs.lacinia.util :as util]
             [com.walmartlabs.lacinia.schema :as schema]
+            [com.walmartlabs.lacinia.resolve :refer [resolve-as]]
             [fylio.db :as db]
             [clojure.edn :as edn]))
 
@@ -27,23 +28,34 @@
   (fn [_ _ course]
     (db/list-users-for-course db (:id course))))
 
+(defn valid-courses?
+  [db courses]
+  (every? #(db/find-course-by-id db %) courses))
+
 (defn upsert-user
   [db]
   (fn [_ args _]
     (let [{user-id :id
-           user :user} args]
-      (db/upsert-user db user-id user)
-      (assoc user :id user-id)
-      )))
+           user    :user} args
+          valid (valid-courses? db (:courses user))]
+      (cond
+        (not valid)
+        (resolve-as nil {:message "Course not found."
+                         :status  404})
+
+        :else
+        (do
+          (db/upsert-user db user-id user)
+          (assoc user :id user-id))))))
 
 (defn resolver-map
   [component]
   (let [{:keys [db]} component]
-    {:Query/userById   (user-by-id db)
-     :Query/courseById (course-by-id db)
+    {:Query/userById      (user-by-id db)
+     :Query/courseById    (course-by-id db)
      :Mutation/upsertUser (upsert-user db)
-     :User/courses     (user-courses db)
-     :Course/students  (course-students db)}))
+     :User/courses        (user-courses db)
+     :Course/students     (course-students db)}))
 
 
 (defn load-schema

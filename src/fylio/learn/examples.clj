@@ -35,7 +35,7 @@
 
 (stats [33 6 2])
 
-(reduce + [1 2 3])
+(reduce + 10 [1 2 3])
 
 (assoc {:a 1 :b 2} :c 3)
 
