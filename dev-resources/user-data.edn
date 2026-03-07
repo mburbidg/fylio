@@ -1,41 +1,41 @@
 {:users
- [{:id        "1234"
+ [{:id        1234
    :firstName "Michael"
    :lastName  "Burbidge"
    :email     "mburbidg@gmail.com"
    :password  "snapple"
-   :courses   #{"200"}}
-  {:id        "1235"
+   :courses   #{200}}
+  {:id        1235
    :firstName "Karen"
    :lastName  "Burbidge"
    :email     "karenburbidge@comcast.net"
    :password  "snoop"
-   :courses   #{"201" "204"}}
-  {:id        "1236"
+   :courses   #{201 204}}
+  {:id        1236
    :firstName "Tom"
    :lastName  "Taylor"
    :email     "tomtaylor@gmail.com"
    :password  "mechanic"
    :courses   #{}}
-  {:id        "1237"
+  {:id        1237
    :firstName "Lonnie "
    :lastName  "Millett"
    :email     "lmillett@gmail.com"
    :password  "sailboat"
-   :courses   #{"200" "203"}}]
+   :courses   #{200 203}}]
  :courses
- [{:id       "200"
+ [{:id       200
    :name     "Computer Science 101"
    :location "TMCB 1113"}
-  {:id       "201"
+  {:id       201
    :name     "Computer Science 102"
    :location "TMCB 1002"}
-  {:id       "202"
+  {:id       202
    :name     "American Heritage 100"
    :location "Joseph Smith Building 201"}
-  {:id       "203"
+  {:id       203
    :name     "Algebra 201"
    :location "Remote"}
-  {:id       "204"
+  {:id       204
    :name     "Religion 200"
    :location "Joseph Smith Building 220"}]}

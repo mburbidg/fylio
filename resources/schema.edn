@@ -2,7 +2,7 @@
  {:User
   {:description "A user of the system."
    :fields
-   {:id        {:type (non-null ID)}
+   {:id        {:type (non-null Int)}
     :firstName {:type (non-null String)}
     :lastName  {:type (non-null String)}
     :email     {:type (non-null String)}
@@ -14,7 +14,7 @@
   :Course
   {:description "A course offered by the institution."
    :fields
-   {:id       {:type (non-null ID)}
+   {:id       {:type (non-null Int)}
     :name     {:type (non-null String)}
     :location {:type (non-null String)}
     :students {:type (non-null (list :User))}}
@@ -24,11 +24,11 @@
   {:fields
    {:userById
     {:type :User
-     :args {:id {:type ID}}
+     :args {:id {:type Int}}
      }
     :courseById
     {:type :Course
-     :args {:id {:type ID}}}
+     :args {:id {:type Int}}}
     }
    }
 
@@ -37,7 +37,7 @@
    {:upsertUser
     {:type :User
      :args
-     {:id {:type (non-null ID)}
+     {:id {:type (non-null Int)}
       :user {:type (non-null :InputUser)}}}}
    }
   }
@@ -50,7 +50,7 @@
     :lastName  {:type (non-null String)}
     :email     {:type (non-null String)}
     :password  {:type (non-null String)}
-    :courses   {:type (non-null (list (non-null ID)))}
+    :courses   {:type (non-null (list (non-null Int)))}
     }
    }
   }
