@@ -50,3 +50,18 @@
        deref
        :users
        (filter #(-> % :courses (contains? course-id)))))
+
+(defn ^:private apply-user
+  [users user-id user]
+  (let [new-user (assoc user :id user-id)]
+    (->> users
+         (remove #(= user-id (:id %)))
+         (cons new-user)
+         vec)))
+
+(defn upsert-user
+  "Adds a new user, or changes the value of an existing user."
+  [db user-id user]
+  (-> db
+      :data
+      (swap! update :users apply-user user-id user)))

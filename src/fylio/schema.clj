@@ -27,11 +27,21 @@
   (fn [_ _ course]
     (db/list-users-for-course db (:id course))))
 
+(defn upsert-user
+  [db]
+  (fn [_ args _]
+    (let [{user-id :id
+           user :user} args]
+      (db/upsert-user db user-id user)
+      (assoc user :id user-id)
+      )))
+
 (defn resolver-map
   [component]
   (let [{:keys [db]} component]
     {:Query/userById   (user-by-id db)
      :Query/courseById (course-by-id db)
+     :Mutation/upsertUser (upsert-user db)
      :User/courses     (user-courses db)
      :Course/students  (course-students db)}))
 

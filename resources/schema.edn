@@ -21,8 +21,7 @@
    }
 
   :Query
-  {
-   :fields
+  {:fields
    {:userById
     {:type :User
      :args {:id {:type ID}}
@@ -30,6 +29,28 @@
     :courseById
     {:type :Course
      :args {:id {:type ID}}}
+    }
+   }
+
+  :Mutation
+  {:fields
+   {:upsertUser
+    {:type :User
+     :args
+     {:id {:type (non-null ID)}
+      :user {:type (non-null :InputUser)}}}}
+   }
+  }
+
+ :input-objects
+ {:InputUser
+  {:description "A user of the system."
+   :fields
+   {:firstName {:type (non-null String)}
+    :lastName  {:type (non-null String)}
+    :email     {:type (non-null String)}
+    :password  {:type (non-null String)}
+    :courses   {:type (non-null (list (non-null ID)))}
     }
    }
   }
