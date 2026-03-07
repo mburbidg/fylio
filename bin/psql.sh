@@ -1,0 +1,1 @@
+docker exec -ti --user postgres fylio-db-1 psql -Ufylio_role fyliodb
