@@ -24,10 +24,10 @@
 *.class
 *.jar
 *.swp
+*.iml
 *~
 /checkouts
 /classes
 /target
 .idea/
-*.iml
 

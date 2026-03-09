@@ -3,14 +3,14 @@
             [com.walmartlabs.lacinia.pedestal2 :as lp]
             [io.pedestal.http :as http]))
 
-(defrecord Server [schema-provider server]
+(defrecord Server [schema-provider server port]
 
   component/Lifecycle
 
   (start [this]
     (assoc this :server (-> schema-provider
                             :schema
-                            (lp/default-service nil)
+                            (lp/default-service {:port port})
                             http/create-server
                             http/start)))
 
