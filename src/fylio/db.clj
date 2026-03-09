@@ -126,4 +126,12 @@
           ["insert into registrations
             (user_id, course_id)
             values (?, ?)"
-           user-id course-id])))))
+           user-id course-id]))
+      (some-> (jdbc/execute-one!
+                tx
+                ["select user_id, first_name, last_name, email, password
+                  from users
+                  where user_id = ?"
+                 user-id]
+                query-opts)
+              remap-user))))

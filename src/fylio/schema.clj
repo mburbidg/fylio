@@ -45,8 +45,7 @@
 
         :else
         (do
-          (db/upsert-user db user-id user)
-          (assoc user :id user-id))))))
+          (db/upsert-user db user-id user))))))
 
 (defn resolver-map
   [component]
