@@ -1,29 +1,52 @@
 (ns fylio.db
-  (:require [clojure.edn :as edn]
-            [clojure.java.io :as io]
-            [com.stuartsierra.component :as component]))
+  (:require [clojure.java.jdbc :as jdbc]
+            [clojure.set :as set]
+            [com.stuartsierra.component :as component])
+  (:import (com.mchange.v2.c3p0 ComboPooledDataSource)))
 
-(defrecord FylioDb [data]
+(defn- pooled-data-source
+  [host dbname user password port]
+  (doto (ComboPooledDataSource.)
+    (.setDriverClass "org.postgresql.Driver")
+    (.setJdbcUrl (str "jdbc:postgresql://" host ":" port "/" dbname))
+    (.setUser user)
+    (.setPassword password)))
+
+(defrecord FylioDb [^ComboPooledDataSource datasource]
 
   component/Lifecycle
 
   (start [this]
-    (assoc this :data (-> (io/resource "user-data.edn")
-                          slurp
-                          edn/read-string
-                          atom)))
+    (assoc this :datasource (pooled-data-source "localhost" "fyliodb" "fylio_role" "lacinia" 25432)))
 
   (stop [this]
-    (assoc this :data nil)))
+    (.close datasource)
+    (assoc this :datasource nil)))
+
+(defn- remap-user
+  [row-data]
+  (set/rename-keys row-data {:user_id    :id
+                             :first_name :firstName
+                             :last_name  :lastName
+                             :email      :email
+                             :password   :password}))
 
 (defn find-user-by-id
-  [db user-id]
-  (->> db
-       :data
-       deref
-       :users
-       (filter #(= user-id (:id %)))
-       first))
+  [component user-id]
+  (-> (jdbc/query component
+                  ["select user_id, first_name, last_name, email, password
+                    from users where user_id = ?" user-id])
+      first
+      remap-user))
+
+;(defn find-user-by-id
+;  [db user-id]
+;  (->> db
+;       :data
+;       deref
+;       :users
+;       (filter #(= user-id (:id %)))
+;       first))
 
 (defn find-course-by-id
   [db course-id]
